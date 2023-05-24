@@ -1,9 +1,15 @@
+from PIL import Image
+
+# Function to display the image corresponding to the season
+def display_photo(season):
+    image_path = f"ISEimages/{season.lower()}.png"
+    image = Image.open(image_path)
+    image.show()
 
 # Scenario A: Finding the season of the year
-
 def find_season(country, month):
     seasons = {
-        "Australia": {
+        "Australia - Meteorological": {
             "December": "Summer",
             "January": "Summer",
             "February": "Summer",
@@ -17,7 +23,21 @@ def find_season(country, month):
             "October": "Spring",
             "November": "Spring"
         },
-        "Japan": {
+        "Australia - The Noongar": {
+            "December": "Birak",
+            "January": "Birak",
+            "February": "Bunuru",
+            "March": "Bunuru",
+            "April": "Djeran",
+            "May": "Djeran",
+            "June": "Makuru",
+            "July": "Makuru",
+            "August": "Dijiba",
+            "September": "Dijiba",
+            "October": "kambarang",
+            "November": "kambarang"
+        },
+        "Japan - Meteorological": {
             "December": "Winter",
             "January": "Winter",
             "February": "Winter",
@@ -31,7 +51,7 @@ def find_season(country, month):
             "October": "Autumn",
             "November": "Autumn"
         },
-        "Spain": {
+        "Spain - Meteorological": {
             "December": "Winter",
             "January": "Winter",
             "February": "Winter",
@@ -45,10 +65,47 @@ def find_season(country, month):
             "October": "Autumn",
             "November": "Autumn"
         },
+        "Mauritius - Meteorological": {
+            "December": "Summer",
+            "January": "Summer",
+            "February": "Summer",
+            "March": "Summer",
+            "April": "Summer",
+            "May": "Autumn",
+            "June": "Winter",
+            "July": "Winter",
+            "August": "Winter",
+            "September": "Winter",
+            "October": "Spring",
+            "November": "Summer"
+        },
+        "Malaysia- Meteorological": {
+            "December": "Northeast Monsoon",
+            "January": "Northeast Monsoon",
+            "February": "Northeast Monsoon",
+            "March": "Inter-monsoon",
+            "April": "Inter-monsoon",
+            "May": "Southeast monsoon",
+            "September": "Southeast monsoon",
+            "October": "Inter-monsoon",
+            "November": "Inter-monsoon"
+        },
+                "Malaysia- Meteorological": {
+            "December": "Northeast Monsoon",
+            "January": "Northeast Monsoon",
+            "February": "Northeast Monsoon",
+            "March": "Inter-monsoon",
+            "April": "Inter-monsoon",
+            "May": "Southeast monsoon",
+            "September": "Southeast monsoon",
+            "October": "Inter-monsoon",
+            "November": "Inter-monsoon"
+        }
+        
     }
     
     if country in seasons and month in seasons[country]:
-        return seasons[country][month]
+        season = seasons[country][month]
         display_photo(season)
         return season
     else:
@@ -58,38 +115,52 @@ def find_season(country, month):
 
 def compare_temperature(city, temperature, time):
     temperatures = {
-        "Australia": {
-            "Morning": 15,
-            "Evening": 20
-        },
-        "Japan": {
-            "Morning": 12,
-            "Evening": 16
-        },
-        # Add more cities and their temperature information here
-    }
+        "Perth": {
+            "Morning": {
+                "min": 0.7,
+                "max": 46.0,
+                "mean": 18.2
+            },
+            "Afternoon": {
+                "min": 0.7,
+                "max": 46.0,
+                "mean": 23.0
+            }
+        }
+    }    
+    
     
     if city in temperatures and time in temperatures[city]:
-        average_temp = temperatures[city][time]
-        difference = temperature - average_temp
-        
-        if difference > 5:
-            return f"The temperature is {difference}⁰C above the average temperature."
-        elif difference < -5:
-            return f"The temperature is {abs(difference)}⁰C below the average temperature."
-        else:
-            return "The temperature is close to the average temperature."
-    else:
-        return "Temperature information not available for the given city and time."
+        min_temp = temperatures[city][time]["min"]
+        max_temp = temperatures[city][time]["max"]
+        mean_temp = temperatures[city][time]["mean"]
 
+        if temperature > max_temp:
+            return f"The temperature is {temperature:.1f}°C, which is higher than the expected maximum temperature of {max_temp:.1f}°C."
+        elif temperature < min_temp:
+            return f"The temperature is {temperature:.1f}°C, which is lower than the expected minimum temperature of {min_temp:.1f}°C."
+        else:
+            if temperature > mean_temp:
+                return "The temperature is above the mean temperature for the given city and time."
+            elif temperature < mean_temp:
+                return "The temperature is below the mean temperature for the given city and time."
+            else:
+                return "The temperature is equal to the mean temperature for the given city and time."
+    else:
+        return "Temperature information not available for the given city or time."
+
+ 
 # Test the functions
 
 # Scenario A
-print(find_season("Australia", "March"))  # Output: Autum
-print(find_season("Japan", "September"))      # Output: Autumn
-print(find_season("Canada", "December"))     # Output: Season information not available for the given country and month.
+country = input("Enter the country name: ")
+month = input("Enter the month: ")
+season = (find_season(country, month))
+print(f"The season in {country} during {month} is {season}.")
+
 
 # Scenario B
-print(compare_temperature("Australia", 18, "Morning"))  # Output: The temperature is close to the average temperature.
-print(compare_temperature("Japan", 10, "Evening"))    # Output: The temperature is 6⁰C below the average temperature.
-print(compare_temperature("Paris", 15, "Morning"))     # Output: Temperature information not available for the given city and time.
+city = input("Enter the city name: ")
+temperature = float(input("Enter the temperature: "))
+time = input("Enter the time (Morning/Afternoon): ")
+print(compare_temperature(city, temperature, time))
